@@ -11,7 +11,6 @@ import noteRouter from "./routes/note";
 
 dotenv.config();
 
-// Create an Express application
 const app = express();
 
 app.use(bodyParser.json());

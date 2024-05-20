@@ -1,6 +1,7 @@
 import { responseHandler } from "@/middlewares/responseHandler";
 import { NotFoundException } from "@/middlewares/throwError";
 import { User } from "@/models/User";
+import { firebaseStorage } from "@/services/firebaseStorage";
 import { NextFunction, Request, Response } from "express";
 
 export const UserController = {
@@ -27,7 +28,12 @@ export const UserController = {
         throw NotFoundException();
       }
       const { fullName } = req.body;
-      user.fullName = fullName;
+      const file = req.file;
+      if (fullName) user.fullName = fullName;
+      if (file) {
+        const url = await firebaseStorage.uploadFile(file);
+        user.avatar = url;
+      }
       await user.save();
       responseHandler(res, {
         item: user,
